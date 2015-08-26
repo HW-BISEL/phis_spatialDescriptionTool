@@ -62,7 +62,7 @@ public class Colour {
         } else if(colour.equalsIgnoreCase("dark_blue")) {
             this.colour = ColourClass.DARK_BLUE;
             this.rgb = -16777088;
-        } else if(colour.equalsIgnoreCase("Brown")) {
+        } else if(colour.equalsIgnoreCase("brown")) {
             this.colour = ColourClass.BROWN;
             this.rgb = -6724045;
         } else if(colour.equalsIgnoreCase("purple")) {
