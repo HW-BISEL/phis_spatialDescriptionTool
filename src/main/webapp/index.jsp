@@ -104,40 +104,64 @@
             <br />
             <hr />
             <br />            
-            
-            <div class="row">
+
+            <div class="row">         
                 <div class="col-md-1"></div>
                 <div class="col-md-3">                                
                     <h5>Instructions</h5>
                     <p>Build a spatial description using statements of the form:<br /><i>colour</i> is <i>relationship</i> to ROI.</p>     
                     <p>Click <i>add</i> to add your description to the list below.</p>
                 </div>
-                <div class="col-md-5">
-                    <select id="shape">
-                        <option value="blue">blue</option>
-                        <option value="cyan">cyan</option>
-                        <option value="green">green</option>
-                        <option value="magenta">magenta</option>
-                        <option value="pink">pink</option>    
-                        <option value="orange">orange</option>        
-                        <option value="red">red</option>
-                        <option value="yellow">yellow</option>    
-                    </select>
-                    is
-                    <select id="reln">
-                        <option value="left">left of</option>
-                        <option value="right">right of</option>
-                        <option value="superior">superior to</option>
-                        <option value="inferior">inferior to</option>
-                        <!--<option value="line">line between</option>-->
-                    </select>  
-                    <b>ROI</b>
+                <div class="col-md-8">
+                    <div>
+                        The
+                        <select id="shape">
+                            <option value="blue">blue</option>
+                            <option value="cyan">cyan</option>
+                            <option value="green">green</option>
+                            <option value="magenta">magenta</option>
+                            <option value="pink">pink</option>    
+                            <option value="orange">orange</option>        
+                            <option value="red">red</option>
+                            <option value="yellow">yellow</option>    
+                        </select>
+                        block 
+                        is
+                        <select id="reln">
+                            <option value="left">left of</option>
+                            <option value="right">right of</option>
+                            <option value="superior">superior to</option>
+                            <option value="inferior">inferior to</option>
+                            <!--<option value="line">line between</option>-->
+                        </select>  
+                        <b>ROI</b>
+                        <button onclick="addSD()">Add</button>
+                    </div>
+                    <br />
+                    <div>
+                        <div>
+                            The
+                            <select id="shapeP">
+                                <option value="dark_blue">blue</option>
+                                <option value="brown">brown</option>
+                                <option value="dark_green">green</option>
+                                <option value="purple">purple</option>
+                            </select>
+                            point 
+                            is
+                            <select id="relnP">
+                                <option value="left">left of</option>
+                                <option value="right">right of</option>
+                                <option value="superior">superior to</option>
+                                <option value="inferior">inferior to</option>
+                                <!--<option value="line">line between</option>-->
+                            </select>  
+                            <b>ROI</b>                                                   
+                            <button onclick="addSD_P()">Add</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-1">
-                    <button onclick="addSD()">Add</button>
-                </div>
-                <div class="col-md-3"></div>
-            </div>        
+            </div>
 
             <br />
             <hr />
@@ -179,12 +203,19 @@
                     drawSDList();
                 }
 
+                function addSD_P() {
+                    var shape = document.getElementById("shapeP").value;
+                    var reln = document.getElementById("relnP").value;
+                    sd.push(reln + "*" + shape);
+                    drawSDList();
+                }
+
                 function drawSDList() {
                     document.getElementById("sdList").innerHTML = "";
                     for (index = 0; index < sd.length; index++) {
                         var temp = sd[index].split("*");
-                        if (temp[1].indexOf("£") === -1) {                            
-                            document.getElementById("sdList").innerHTML += "<p>"+ temp[1] + " " + temp[0] + " of ROI  <button onClick='removeSD(\"" + temp[0] + "*" + temp[1] + "\")'>remove</button></p>";
+                        if (temp[1].indexOf("£") === -1) {
+                            document.getElementById("sdList").innerHTML += "<p>" + temp[1] + " " + temp[0] + " of ROI  <button onClick='removeSD(\"" + temp[0] + "*" + temp[1] + "\")'>remove</button></p>";
                         } else {
                             var temp2 = temp[1].split("£");
                             document.getElementById("sdList").innerHTML += "<p>Line from " + temp2[0] + " to " + temp2[1] + " <button onClick='removeSD(\"" + temp[0] + "*" + temp2[0] + "£" + temp2[1] + "\")'>remove</button></p>";
@@ -218,9 +249,9 @@
                         }
                         params += temp[0] + "=" + temp[1];
                     }
-                    
-                    params += "&semantics="+document.getElementById("semantics").value;
-                    
+
+                    params += "&semantics=" + document.getElementById("semantics").value;
+
                     var queryURL = "<%= org.bisel.imageprocessing.GetProperties.getURI()%>SDT/process?image=" + pic + "&" + params;
 
                     $.getJSON(queryURL, function (data) {
