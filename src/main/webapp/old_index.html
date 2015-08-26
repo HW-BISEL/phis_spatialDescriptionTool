@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>SDT</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+    </head>
+    <body>        
+        <div class="row">
+            <div class="col-md-12">
+                <center><b>Superior</b></center>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">                                   
+                <center><div id="image"><img width="300" height="300" src="${org.bisel.imageprocessing.GetProperties.getURL()}one.png"/></div></center>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12"> 
+                <br />
+                <center><b>Inferior</b></center>
+            </div>        
+        </div>    
+
+        <br />
+        <hr />
+        <br />
+
+        <div class="row">
+            <div class="col-md-1">
+
+            </div>
+
+
+            <div class="col-md-3">
+                <%= org.bisel.imageprocessing.GetProperties.getURL() =>
+                <h5>Instructions</h5>
+                <p>Build a spatial description using statements of the form:<br />ROI is <i>relationship</i> to <i>colour</i>.</p>                
+            </div>
+
+
+            <div class="col-md-1">                
+                <p><b>ROI</b> is</p>
+            </div>
+            <div class="col-md-4">
+                <select id="reln">
+                    <option value="left">left of</option>
+                    <option value="right">right of</option>
+                    <option value="superior">superior to</option>
+                    <option value="inferior">inferior to</option>
+                </select>      
+                <select id="shape">
+                    <option value="blue">blue</option>
+                    <option value="cyan">cyan</option>
+                    <option value="green">green</option>
+                    <option value="magenta">magenta</option>
+                    <option value="pink">pink</option>    
+                    <option value="orange">orange</option>        
+                    <option value="red">red</option>
+                    <option value="yellow">yellow</option>    
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button onclick="addSD()">Add</button>
+            </div>
+            <div class="col-md-1">
+
+            </div>
+        </div>        
+
+        <br />
+        <hr />
+        <br />
+
+        <div class="row">
+            <div class="col-md-1">
+            </div>
+            <div class="col-md-3">                
+                Spatial Description you have built:                    
+            </div>
+            <div id="sdList" class="col-md-3">
+                <p>No description</p>
+            </div>    
+            <div class="col-md-3">
+                <button onclick="clearAll()">reset</button>
+                <button onclick="submit()">submit</button>                                
+            </div>
+            <div class="col-md-2">                                
+            </div>
+        </div>
+
+
+        <script type="text/javascript" language="javascript">
+            var sd = [];
+            function addSD() {
+                var shape = document.getElementById("shape").value;
+                var reln = document.getElementById("reln").value;
+                sd.push(reln + "*" + shape);
+                drawSDList();
+            }
+            function drawSDList() {
+                document.getElementById("sdList").innerHTML = "";
+                for (index = 0; index < sd.length; index++) {
+                    var temp = sd[index].split("*");
+                    document.getElementById("sdList").innerHTML += "<p>ROI is " + temp[0] + " of " + temp[1] + " <button onClick='removeSD(\"" + temp[0] + "*" + temp[1] + "\")'>remove</button></p>";
+                }
+            }
+            function removeSD(item) {
+                var tempArray = [];
+                for (index = 0; index < sd.length; index++) {
+                    if (sd[index] !== item) {
+                        tempArray.push(sd[index]);
+                    }
+                }
+                sd = tempArray;
+                drawSDList();
+            }
+            function clearAll() {
+                document.getElementById("sdList").innerHTML = "";
+                document.getElementById("image").innerHTML = '<img width="300" height="300" src="${org.bisel.imageprocessing.GetProperties.getURL()}one.png"/>';
+            }
+            function submit() {
+                var params = "";
+                for (index = 0; index < sd.length; index++) {
+                    var temp = sd[index].split("*");
+                    if (index !== 0) {
+                        params += "&";
+                    }
+                    params += temp[0] + "=" + temp[1];
+                }
+                var queryURL = "http://localhost:8080/SDT/process?image=one&" + params;
+
+                $.getJSON(queryURL, function (data) {                    
+                    if (data.result === "success") {
+                        document.getElementById("image").innerHTML = "<img width=\"300\" height=\"300\" src=\"" + data.image + "\">";
+                    } else {
+                        alert("error:" + data.message);
+                    }
+                });
+            }
+
+            function submit2() {
+                var params = "";
+                for (index = 0; index < sd.length; index++) {
+                    var temp = sd[index].split("*");
+                    if (index !== 0) {
+                        params += "&";
+                    }
+                    params += temp[0] + "=" + temp[1];
+                }
+                var queryURL = "http://localhost:8080/SDT/process?" + params;
+
+                var jqxhr = $.ajax(queryURL, {dataType: "json"})
+                        .done(function () {
+                            alert("success");
+                        })
+                        .fail(function (jqXHR, textStatus) {
+                            alert("Request failed: " + textStatus);
+                        })
+                        .always(function () {
+                            alert("complete");
+                        });
+            }
+        </script>
+    </body>
+</html>
