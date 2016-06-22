@@ -125,8 +125,7 @@
                             <option value="red">red</option>
                             <option value="yellow">yellow</option>    
                         </select>
-                        block 
-                        is
+                        <strong>block</strong> is
                         <select id="reln">
                             <option value="left">left of</option>
                             <option value="right">right of</option>
@@ -147,8 +146,7 @@
                                 <option value="dark_green">green</option>
                                 <option value="purple">purple</option>
                             </select>
-                            point 
-                            is
+                            <strong>point</strong> is
                             <select id="relnP">
                                 <option value="left">left of</option>
                                 <option value="right">right of</option>
@@ -178,7 +176,7 @@
                 </div>    
                 <div class="col-md-3">
                     <button onclick="clearAll()">reset</button>
-                    <button onclick="submit()">submit</button>                                
+                    <!--<button onclick="submit()">submit</button>-->
                 </div>
                 <div class="col-md-2">                                
                 </div>
@@ -221,6 +219,7 @@
                             document.getElementById("sdList").innerHTML += "<p>Line from " + temp2[0] + " to " + temp2[1] + " <button onClick='removeSD(\"" + temp[0] + "*" + temp2[0] + "£" + temp2[1] + "\")'>remove</button></p>";
                         }
                     }
+                    submit();
                 }
 
                 function removeSD(item) {
@@ -263,28 +262,6 @@
                     });
                 }
 
-                function submit2() {
-                    var params = "";
-                    for (index = 0; index < sd.length; index++) {
-                        var temp = sd[index].split("*");
-                        if (index !== 0) {
-                            params += "&";
-                        }
-                        params += temp[0] + "=" + temp[1];
-                    }
-                    var queryURL = "http://localhost:8080/SDT/process?" + params;
-
-                    var jqxhr = $.ajax(queryURL, {dataType: "json"})
-                            .done(function () {
-                                alert("success");
-                            })
-                            .fail(function (jqXHR, textStatus) {
-                                alert("Request failed: " + textStatus);
-                            })
-                            .always(function () {
-                                alert("complete");
-                            });
-                }
             </script>
     </body>
 </html>
