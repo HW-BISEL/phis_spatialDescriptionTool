@@ -6,7 +6,7 @@ A simple web app that demonstrates the difference between BSPO semantics and ALL
 
 * Copy the images from _> main > resources > images_ to an accessible location in your server (default is tomcat's ROOT folder).
 * Change the profile in pom.xml to reflect your environment 
-* Run maven package
+* Run maven package specifiying the profile you wish to use, e.g. _mvn package -P local_
 * Copy the war file to your server
 
 ### Who do I talk to? ###
